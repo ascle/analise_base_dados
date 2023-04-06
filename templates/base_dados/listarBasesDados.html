@@ -1,0 +1,33 @@
+{% extends 'base_dados/base.html' %}
+{% load static %}
+{% block content %}
+<section class="conteudo">
+    <section class="banner">
+
+    </section>
+    <section class="tags">
+
+    </section>
+    <section class="galeria">
+        <div class="cards">
+            <h2 class="cards__titulo">Bases de dados</h2>
+            <ul class="cards__lista">
+                {% if lista_bases %}
+                    {% for item_base in lista_bases %}
+                        <li class="card">
+                            <a href="{% url 'verBaseDados' item_base %}">
+                                  {{item_base}}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                {% endif %}
+            </ul>
+        </div>
+    </section>
+</section>
+
+
+</main>
+</div>
+{% endblock %}
