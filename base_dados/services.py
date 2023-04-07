@@ -38,6 +38,7 @@ def info_colunas_base(dados):
     try:
         tipos_de_dados = pd.DataFrame(dados.dtypes, columns=['Tipos de dados'])
         tipos_de_dados.columns.name = 'Variáveis'
+
         # Possui Nan
         tipos_de_dados['ddd'] = tipos_de_dados.index
         tipos_de_dados['Possui Nan'] = tipos_de_dados.apply(
@@ -47,11 +48,16 @@ def info_colunas_base(dados):
         tipos_de_dados['Intervalo de Valores'] = tipos_de_dados.apply(
             lambda row: sorted(dados[row.ddd].unique()) if is_numeric_dtype(dados[row.ddd].dtype) else dados[
                 row.ddd].unique(), axis=1)
+
         tipos_de_dados.drop(columns=['ddd'], inplace=True)
 
         return tipos_de_dados
     except Exception as e:
         raise e
 
+def info_coluna_quantidade(url_base, nome_variavel):
+    dados = get_base_dados(url_base)
 
-
+    freq = dados[nome_variavel].value_counts(dropna=False).reset_index()
+    freq.columns = [nome_variavel, 'Quantidade']
+    return freq
