@@ -80,7 +80,8 @@ def graf_hist(data_frame, nome_variavel):
         plt.rc('figure', figsize=(15, 8))
         fig = plt.gcf()
         ax = fig.gca()
-        data_frame.hist([nome_variavel], ax=ax, ec="k")
+        data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
+        #data_frame.hist([nome_variavel], ax=ax, ec="k")
         # convert graph into dtring buffer and then we convert 64 bit code into image
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
