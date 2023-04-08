@@ -1,5 +1,10 @@
+import base64
+import io
 import os
+import urllib
+
 import pandas as pd
+import matplotlib.pyplot as plt
 from pandas.api.types import is_numeric_dtype
 
 from django.templatetags.static import static
@@ -55,9 +60,35 @@ def info_colunas_base(dados):
     except Exception as e:
         raise e
 
-def info_coluna_quantidade(url_base, nome_variavel):
-    dados = get_base_dados(url_base)
+def info_coluna_quantidade(data_frame, nome_variavel):
+    freq = data_frame[nome_variavel].value_counts(dropna=False)
+    porc = (data_frame[nome_variavel].value_counts(dropna=False, normalize=True) * 100).round(2)
+    dis_freq_quantitativas_personalizadas = pd.DataFrame({'Frequência': freq, 'Porcentagem (%)': porc})
+    return dis_freq_quantitativas_personalizadas
 
-    freq = dados[nome_variavel].value_counts(dropna=False).reset_index()
-    freq.columns = [nome_variavel, 'Quantidade']
-    return freq
+
+# Usar quando tiver um target do tipo Valor
+def info_coluna_descritiva(data_frame, agrupamento, target):
+    agrupamento = data_frame.groupby(agrupamento)
+    descritiva = pd.DataFrame(agrupamento[target].describe().round(2))
+    print(descritiva)
+    return descritiva
+
+def graf_hist(data_frame, nome_variavel):
+    try:
+        plt.clf()
+        plt.rc('figure', figsize=(15, 8))
+        fig = plt.gcf()
+        ax = fig.gca()
+        data_frame.hist([nome_variavel], ax=ax, ec="k")
+        # convert graph into dtring buffer and then we convert 64 bit code into image
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = urllib.parse.quote(string)
+        return uri
+    except ValueError:
+        print()
+
+

@@ -11,6 +11,8 @@
             {% autoescape off %}
                 {{view.tabela_quantidade}}
             {% endautoescape %}
+            <p><b>Histograma:</b></p>
+            <img src="data:image/png;base64,{{ view.img_hist }}" alt="">
         </div>
     </section>
 </section>
