@@ -3,6 +3,7 @@ import io
 import os
 import urllib
 
+import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.api.types import is_numeric_dtype
@@ -60,36 +61,110 @@ def info_colunas_base(dados):
     except Exception as e:
         raise e
 
+
 def info_coluna_quantidade(data_frame, nome_variavel):
-    freq = data_frame[nome_variavel].value_counts(dropna=False)
-    porc = (data_frame[nome_variavel].value_counts(dropna=False, normalize=True) * 100).round(2)
-    dis_freq_quantitativas_personalizadas = pd.DataFrame({'Frequência': freq, 'Porcentagem (%)': porc})
-    return dis_freq_quantitativas_personalizadas
+    try:
+        freq = data_frame[nome_variavel].value_counts(dropna=False)
+        porc = (data_frame[nome_variavel].value_counts(dropna=False, normalize=True) * 100).round(2)
+        dis_freq_quantitativas_personalizadas = pd.DataFrame({'Frequência': freq, 'Porcentagem (%)': porc})
+        return dis_freq_quantitativas_personalizadas
+    except Exception as e:
+        raise e
 
 
 # Usar quando tiver um target do tipo Valor
 def info_coluna_descritiva(data_frame, agrupamento, target):
-    agrupamento = data_frame.groupby(agrupamento)
-    descritiva = pd.DataFrame(agrupamento[target].describe().round(2))
-    print(descritiva)
-    return descritiva
+    try:
+        agrupamento = data_frame.groupby(agrupamento)
+        descritiva = pd.DataFrame(agrupamento[target].describe().round(2))
+        return descritiva
+    except Exception as e:
+        raise e
 
-def graf_hist(data_frame, nome_variavel):
+
+def graf_diag_freq(data_frame, nome_variavel):
     try:
         plt.clf()
         plt.rc('figure', figsize=(15, 8))
         fig = plt.gcf()
         ax = fig.gca()
+
         data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
-        #data_frame.hist([nome_variavel], ax=ax, ec="k")
-        # convert graph into dtring buffer and then we convert 64 bit code into image
+
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
         buf.seek(0)
         string = base64.b64encode(buf.read())
         uri = urllib.parse.quote(string)
         return uri
-    except ValueError:
-        print()
+    except ValueError as e:
+        raise e
+    except Exception as e:
+        raise e
 
 
+def graf_histograma(data_frame, nome_variavel):
+    try:
+        plt.clf()
+        plt.rc('figure', figsize=(15, 8))
+        fig = plt.gcf()
+        ax = fig.gca()
+
+        data_frame.hist([nome_variavel], ax=ax, ec="k")
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = urllib.parse.quote(string)
+        return uri
+    except ValueError as e:
+        raise e
+    except Exception as e:
+        raise e
+
+
+def graf_boxplot(data_frame, nome_variavel):
+    try:
+        plt.clf()
+        plt.rc('figure', figsize=(15, 8))
+        fig = plt.gcf()
+        ax = fig.gca()
+
+        data_frame.boxplot([nome_variavel], ax=ax, vert=False)
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = urllib.parse.quote(string)
+        return uri
+    except ValueError as e:
+        raise e
+    except Exception as e:
+        raise e
+
+
+def graf_freq_acumulada(data_frame, nome_variavel):
+    try:
+        plt.clf()
+
+        ax = sns.distplot(data_frame[nome_variavel],
+                          hist_kws={'cumulative': True},
+                          kde_kws={'cumulative': True})
+        ax.figure.set_size_inches(12, 6)
+        ax.set_title('Distribuição de Frequências Acumulada', fontsize=18)
+        ax.set_ylabel('Acumulado', fontsize=14)
+        ax.set_xlabel(nome_variavel, fontsize=14)
+
+        buf = io.BytesIO()
+
+        fig = ax.get_figure()
+        fig.savefig(buf, format='png')
+
+        buf.seek(0)
+        string = base64.b64encode(buf.read())
+        uri = urllib.parse.quote(string)
+        return uri
+    except Exception as e:
+        raise e

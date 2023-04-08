@@ -46,17 +46,42 @@ def ver_base_dados(request, base_dados):
 
 def ver_coluna(request, nome_variavel, url_base):
     try:
+        mensagem_erro = []
         data_frame = service.get_base_dados(url_base)
         tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel).to_html(
             render_links=True,
             escape=False,)
         #descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(render_links=True,escape=False,)
+        img_freq = service.graf_diag_freq(data_frame, nome_variavel)
+
+        img_boxplot = None
+        try:
+            img_boxplot = service.graf_boxplot(data_frame, nome_variavel)
+        except Exception as e:
+            mensagem_erro.append('Boxplot: '+str(e))
+
+        img_hist = None
+        try:
+            img_hist = service.graf_histograma(data_frame, nome_variavel)
+        except Exception as e:
+            mensagem_erro.append('Histograma: '+str(e))
+
+        img_freq_acu = None
+        try:
+            img_freq_acu = service.graf_freq_acumulada(data_frame, nome_variavel)
+        except Exception as e:
+            mensagem_erro.append('Frequência Acumulada: '+str(e))
+
 
         choices = {'nome_variavel': nome_variavel,
                    'url_base': url_base,
                    'tabela_quantidade': tabela_quantidade,
                    #'descritiva': descritiva
-                   'img_hist': service.graf_hist(data_frame, nome_variavel)
+                   'img_freq': img_freq,
+                   'img_boxplot': img_boxplot,
+                   'img_hist': img_hist,
+                   'mensagem_erro': mensagem_erro,
+                   'img_freq_acu': img_freq_acu,
                    }
         return render(request, 'base_dados/verColunaDaBaseDeDados.html', {"view": choices})
     except:
