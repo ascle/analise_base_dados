@@ -85,11 +85,16 @@ def info_coluna_descritiva(data_frame, agrupamento, target):
 def graf_diag_freq(data_frame, nome_variavel):
     try:
         plt.clf()
-        plt.rc('figure', figsize=(15, 8))
-        fig = plt.gcf()
-        ax = fig.gca()
+        # plt.rc('figure', figsize=(15, 8))
+        # fig = plt.gcf()
+        # ax = fig.gca()
+        # data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
 
-        data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
+        sns.set_style("darkgrid")
+        sns.set(rc={'figure.figsize': (15, 8)})
+        ax = sns.histplot(data_frame[nome_variavel], discrete=True)
+        ax.set(title='Distribuição de frequência', xlabel=nome_variavel, ylabel='Frequência')
+        fig = ax.get_figure()
 
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
@@ -106,11 +111,18 @@ def graf_diag_freq(data_frame, nome_variavel):
 def graf_histograma(data_frame, nome_variavel):
     try:
         plt.clf()
-        plt.rc('figure', figsize=(15, 8))
-        fig = plt.gcf()
-        ax = fig.gca()
+        #plt.rc('figure', figsize=(15, 8))
+        #fig = plt.gcf()
+        #ax = fig.gca()
+        #data_frame.hist([nome_variavel], ax=ax, ec="k")
 
-        data_frame.hist([nome_variavel], ax=ax, ec="k")
+        sns.set_style("darkgrid")
+        sns.set(rc={'figure.figsize': (15, 8)})
+        # ax = sns.distplot(data_frame[nome_variavel], hist={'stat': 'density', 'discrete': True})
+        # ax = sns.kdeplot(data_frame[nome_variavel])
+        ax = sns.histplot(data_frame[nome_variavel], stat='density', discrete=True)
+        ax.set(title='Histograma', xlabel=nome_variavel, ylabel='Densidade')
+        fig = ax.get_figure()
 
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
@@ -127,11 +139,12 @@ def graf_histograma(data_frame, nome_variavel):
 def graf_boxplot(data_frame, nome_variavel):
     try:
         plt.clf()
-        plt.rc('figure', figsize=(15, 8))
-        fig = plt.gcf()
-        ax = fig.gca()
+        sns.set_style("darkgrid")
+        sns.set(rc={'figure.figsize': (15, 8)})
 
-        data_frame.boxplot([nome_variavel], ax=ax, vert=False)
+        ax = sns.boxplot(data=data_frame[nome_variavel], orient='h', medianprops={"color": "coral"})
+        ax.set(title='Distribuição de frequência', xlabel=nome_variavel)
+        fig = ax.get_figure()
 
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
@@ -148,17 +161,18 @@ def graf_boxplot(data_frame, nome_variavel):
 def graf_freq_acumulada(data_frame, nome_variavel):
     try:
         plt.clf()
-
+        sns.set_style("darkgrid")
+        # ax.figure.set_size_inches(12, 6)
+        sns.set(rc={'figure.figsize': (15, 8)})
         ax = sns.distplot(data_frame[nome_variavel],
                           hist_kws={'cumulative': True},
                           kde_kws={'cumulative': True})
-        ax.figure.set_size_inches(12, 6)
-        ax.set_title('Distribuição de Frequências Acumulada', fontsize=18)
+
+        ax.set_title('Distribuição de frequências acumulada')
         ax.set_ylabel('Acumulado', fontsize=14)
         ax.set_xlabel(nome_variavel, fontsize=14)
 
         buf = io.BytesIO()
-
         fig = ax.get_figure()
         fig.savefig(buf, format='png')
 

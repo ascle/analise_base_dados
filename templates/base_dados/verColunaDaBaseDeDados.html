@@ -5,18 +5,24 @@
 <section class="conteudo">
     <section class="imagem">
         <div class="imagem__conteudo">
+
             <p><b>Base de dados:</b> <a href="{% url 'verBaseDados' view.url_base %}">{{view.url_base}}</a></p>
             <p><b>Variável:</b> {{view.nome_variavel}}</p>
+
             <p><b>Tabela de frequência:</b></p>
             {% autoescape off %}
                 {{view.tabela_quantidade}}
             {% endautoescape %}
+
             <p><b>Diagrama de frequência:</b></p>
             <img src="data:image/png;base64,{{ view.img_freq }}" alt="">
-            <p><b>Frequencia Acumulada:</b></p>
-            <img src="data:image/png;base64,{{ view.img_freq_acu }}" alt="">
+
             <p><b>Histograma:</b></p>
             <img src="data:image/png;base64,{{ view.img_hist }}" alt="">
+
+            <p><b>Frequencia Acumulada:</b></p>
+            <img src="data:image/png;base64,{{ view.img_freq_acu }}" alt="">
+
             <p><b>BoxPlot:</b></p>
             <img src="data:image/png;base64,{{ view.img_boxplot }}" alt="">
 
