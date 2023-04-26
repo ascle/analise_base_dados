@@ -82,26 +82,32 @@ def info_coluna_descritiva(data_frame, agrupamento, target):
         raise e
 
 
+def iniciar_grafico():
+    plt.clf()
+    # plt.rc('figure', figsize=(15, 8))
+    # fig = plt.gcf()
+    # ax = fig.gca()
+    sns.set_style("darkgrid")
+    sns.set(rc={'figure.figsize': (15, 8)})
+
+
+def finalizar_grafico(figure):
+    buf = io.BytesIO()
+    figure.savefig(buf, format='png')
+    buf.seek(0)
+    string = base64.b64encode(buf.read())
+    uri = urllib.parse.quote(string)
+    return uri
+
 def graf_diag_freq(data_frame, nome_variavel):
     try:
-        plt.clf()
-        # plt.rc('figure', figsize=(15, 8))
-        # fig = plt.gcf()
-        # ax = fig.gca()
-        # data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
+        iniciar_grafico()
 
-        sns.set_style("darkgrid")
-        sns.set(rc={'figure.figsize': (15, 8)})
+        # data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
         ax = sns.histplot(data_frame[nome_variavel], discrete=True)
         ax.set(title='Distribuição de frequência', xlabel=nome_variavel, ylabel='Frequência')
-        fig = ax.get_figure()
 
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
-        string = base64.b64encode(buf.read())
-        uri = urllib.parse.quote(string)
-        return uri
+        return finalizar_grafico(ax.get_figure())
     except ValueError as e:
         raise e
     except Exception as e:
@@ -110,26 +116,14 @@ def graf_diag_freq(data_frame, nome_variavel):
 
 def graf_histograma(data_frame, nome_variavel):
     try:
-        plt.clf()
-        #plt.rc('figure', figsize=(15, 8))
-        #fig = plt.gcf()
-        #ax = fig.gca()
-        #data_frame.hist([nome_variavel], ax=ax, ec="k")
+        iniciar_grafico()
 
-        sns.set_style("darkgrid")
-        sns.set(rc={'figure.figsize': (15, 8)})
         # ax = sns.distplot(data_frame[nome_variavel], hist={'stat': 'density', 'discrete': True})
         # ax = sns.kdeplot(data_frame[nome_variavel])
         ax = sns.histplot(data_frame[nome_variavel], stat='density', discrete=True)
         ax.set(title='Histograma', xlabel=nome_variavel, ylabel='Densidade')
-        fig = ax.get_figure()
 
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
-        string = base64.b64encode(buf.read())
-        uri = urllib.parse.quote(string)
-        return uri
+        return finalizar_grafico(ax.get_figure())
     except ValueError as e:
         raise e
     except Exception as e:
@@ -138,20 +132,12 @@ def graf_histograma(data_frame, nome_variavel):
 
 def graf_boxplot(data_frame, nome_variavel):
     try:
-        plt.clf()
-        sns.set_style("darkgrid")
-        sns.set(rc={'figure.figsize': (15, 8)})
+        iniciar_grafico()
 
         ax = sns.boxplot(data=data_frame[nome_variavel], orient='h', medianprops={"color": "coral"})
         ax.set(title='Distribuição de frequência', xlabel=nome_variavel)
-        fig = ax.get_figure()
 
-        buf = io.BytesIO()
-        fig.savefig(buf, format='png')
-        buf.seek(0)
-        string = base64.b64encode(buf.read())
-        uri = urllib.parse.quote(string)
-        return uri
+        return finalizar_grafico(ax.get_figure())
     except ValueError as e:
         raise e
     except Exception as e:
@@ -160,10 +146,8 @@ def graf_boxplot(data_frame, nome_variavel):
 
 def graf_freq_acumulada(data_frame, nome_variavel):
     try:
-        plt.clf()
-        sns.set_style("darkgrid")
-        # ax.figure.set_size_inches(12, 6)
-        sns.set(rc={'figure.figsize': (15, 8)})
+        iniciar_grafico()
+
         ax = sns.distplot(data_frame[nome_variavel],
                           hist_kws={'cumulative': True},
                           kde_kws={'cumulative': True})
@@ -172,13 +156,7 @@ def graf_freq_acumulada(data_frame, nome_variavel):
         ax.set_ylabel('Acumulado', fontsize=14)
         ax.set_xlabel(nome_variavel, fontsize=14)
 
-        buf = io.BytesIO()
-        fig = ax.get_figure()
-        fig.savefig(buf, format='png')
-
-        buf.seek(0)
-        string = base64.b64encode(buf.read())
-        uri = urllib.parse.quote(string)
-        return uri
+        return finalizar_grafico(ax.get_figure())
     except Exception as e:
         raise e
+
