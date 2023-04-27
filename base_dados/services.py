@@ -72,6 +72,12 @@ def info_coluna_quantidade(data_frame, nome_variavel):
     except Exception as e:
         raise e
 
+def info_coluna_describe(data_frame, nome_variavel):
+    try:
+        describe = pd.DataFrame(data_frame[nome_variavel].describe())
+        return describe
+    except Exception as e:
+        raise e
 
 # Usar quando tiver um target do tipo Valor
 def info_coluna_descritiva(data_frame, agrupamento, target):

@@ -61,6 +61,11 @@ def ver_coluna(request, nome_variavel, url_base):
             render_links=True,
             escape=False,)
 
+        # Tabela do describe
+        tabela_describe = service.info_coluna_describe(data_frame, nome_variavel).to_html(
+            render_links=True,
+            escape=False,)
+
         # Informações descritivas
         # descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(render_links=True,escape=False,)
 
@@ -107,6 +112,7 @@ def ver_coluna(request, nome_variavel, url_base):
         choices = {'nome_variavel': nome_variavel,
                    'url_base': url_base,
                    'tabela_quantidade': tabela_quantidade,
+                   'tabela_describe': tabela_describe,
                    #'descritiva': descritiva
                    'img_freq': img_freq,
                    'img_boxplot': img_boxplot,

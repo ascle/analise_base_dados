@@ -11,6 +11,11 @@
 
             <p><b>{{view.test_normal}}</b></p>
 
+            <p><b>Estatística descritiva:</b></p>
+            {% autoescape off %}
+                {{view.tabela_describe}}
+            {% endautoescape %}
+
             <p><b>Tabela de frequência:</b></p>
             {% autoescape off %}
                 {{view.tabela_quantidade}}
