@@ -9,6 +9,8 @@
             <p><b>Base de dados:</b> <a href="{% url 'verBaseDados' view.url_base %}">{{view.url_base}}</a></p>
             <p><b>Variável:</b> {{view.nome_variavel}}</p>
 
+            <p><b>{{view.test_normal}}</b></p>
+
             <p><b>Tabela de frequência:</b></p>
             {% autoescape off %}
                 {{view.tabela_quantidade}}

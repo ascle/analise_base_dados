@@ -3,14 +3,14 @@ import io
 import os
 import urllib
 
-import seaborn as sns
-import pandas as pd
 import matplotlib.pyplot as plt
-from pandas.api.types import is_numeric_dtype
-
-from django.templatetags.static import static
-from django.contrib.staticfiles.utils import get_files
+import pandas as pd
+import seaborn as sns
 from django.contrib.staticfiles.storage import StaticFilesStorage
+from django.contrib.staticfiles.utils import get_files
+from pandas.api.types import is_numeric_dtype
+from scipy.stats import normaltest
+
 from setup.settings import STATIC_ROOT
 
 
@@ -118,8 +118,7 @@ def graf_histograma(data_frame, nome_variavel):
     try:
         iniciar_grafico()
 
-        # ax = sns.distplot(data_frame[nome_variavel], hist={'stat': 'density', 'discrete': True})
-        # ax = sns.kdeplot(data_frame[nome_variavel])
+        ax = sns.distplot(data_frame[nome_variavel], hist=False, kde_kws={'bw':0.5})
         ax = sns.histplot(data_frame[nome_variavel], stat='density', discrete=True)
         ax.set(title='Histograma', xlabel=nome_variavel, ylabel='Densidade')
 
@@ -160,3 +159,13 @@ def graf_freq_acumulada(data_frame, nome_variavel):
     except Exception as e:
         raise e
 
+
+# A função normaltest testa a hipótese nula H0 de que a amostra é proveniente de uma distribuição normal.
+# Rejeitar H0 se o valor p≤0,05
+def test_normalidade(data_frame, nome_variavel):
+    try:
+        significancia = 0.05
+        stat_test, p_valor = normaltest(data_frame[nome_variavel])
+        return not (p_valor <= significancia)
+    except Exception as e:
+        raise e

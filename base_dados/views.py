@@ -46,32 +46,57 @@ def ver_base_dados(request, base_dados):
 
 def ver_coluna(request, nome_variavel, url_base):
     try:
+
+        # ................ VARIÁVEIS ................
+
         mensagem_erro = []
+        test_normalidade = "A variável '{}' é proveniente de uma distribuição normal? {}"
         data_frame = service.get_base_dados(url_base)
+
+
+        # ................ INFORMAÇÕES ................
+
+        # Tabela de frequencia
         tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel).to_html(
             render_links=True,
             escape=False,)
-        #descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(render_links=True,escape=False,)
+
+        # Informações descritivas
+        # descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(render_links=True,escape=False,)
+
+        # Teste de normalidade
+        is_normal = service.test_normalidade(data_frame, nome_variavel)
+        verdade_ou_falso = 'Verdadeiro' if is_normal else 'Falso'
+        test_normalidade = test_normalidade.format(nome_variavel, verdade_ou_falso)
+
+        # ................ GRÁFICOS ................
+
+        # Gráfico de frequencia
         img_freq = service.graf_diag_freq(data_frame, nome_variavel)
 
+        # Gráfico do BoxPlot
         img_boxplot = None
         try:
             img_boxplot = service.graf_boxplot(data_frame, nome_variavel)
         except Exception as e:
             mensagem_erro.append('Boxplot: '+str(e))
 
+        # Gráfico do histograma
         img_hist = None
         try:
             img_hist = service.graf_histograma(data_frame, nome_variavel)
         except Exception as e:
             mensagem_erro.append('Histograma: '+str(e))
 
+        # Gráfico de Frequencia Acumulada
         img_freq_acu = None
         try:
             img_freq_acu = service.graf_freq_acumulada(data_frame, nome_variavel)
         except Exception as e:
             mensagem_erro.append('Frequência Acumulada: '+str(e))
 
+
+        # ................ PARÂMETROS ................
 
         choices = {'nome_variavel': nome_variavel,
                    'url_base': url_base,
@@ -82,6 +107,7 @@ def ver_coluna(request, nome_variavel, url_base):
                    'img_hist': img_hist,
                    'mensagem_erro': mensagem_erro,
                    'img_freq_acu': img_freq_acu,
+                   'test_normal': test_normalidade,
                    }
         return render(request, 'base_dados/verColunaDaBaseDeDados.html', {"view": choices})
     except:
