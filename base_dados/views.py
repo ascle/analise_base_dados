@@ -95,6 +95,12 @@ def ver_coluna(request, nome_variavel, url_base):
         except Exception as e:
             mensagem_erro.append('Frequência Acumulada: '+str(e))
 
+        # Gráfico das médias
+        img_medias = None
+        try:
+            img_medias = service.graf_media(data_frame, nome_variavel)
+        except Exception as e:
+            mensagem_erro.append('Distribuição das Médias: ' + str(e))
 
         # ................ PARÂMETROS ................
 
@@ -107,6 +113,7 @@ def ver_coluna(request, nome_variavel, url_base):
                    'img_hist': img_hist,
                    'mensagem_erro': mensagem_erro,
                    'img_freq_acu': img_freq_acu,
+                   'img_medias': img_medias,
                    'test_normal': test_normalidade,
                    }
         return render(request, 'base_dados/verColunaDaBaseDeDados.html', {"view": choices})

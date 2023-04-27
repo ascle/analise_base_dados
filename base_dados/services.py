@@ -4,6 +4,7 @@ import os
 import urllib
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from django.contrib.staticfiles.storage import StaticFilesStorage
@@ -153,6 +154,22 @@ def graf_freq_acumulada(data_frame, nome_variavel):
 
         ax.set_title('Distribuição de frequências acumulada')
         ax.set_ylabel('Acumulado', fontsize=14)
+        ax.set_xlabel(nome_variavel, fontsize=14)
+
+        return finalizar_grafico(ax.get_figure())
+    except Exception as e:
+        raise e
+
+
+def graf_media(data_frame, nome_variavel):
+    try:
+        iniciar_grafico()
+
+        np.random.seed(101)
+        temp = data_frame[nome_variavel].sample(frac=0.5)
+        medias = [temp[0:i].mean() for i in range(1, len(temp))]
+        ax = sns.lineplot(medias)
+        ax.set_title('Distribuição das médias')
         ax.set_xlabel(nome_variavel, fontsize=14)
 
         return finalizar_grafico(ax.get_figure())
