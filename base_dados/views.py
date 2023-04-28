@@ -57,27 +57,46 @@ def ver_coluna(request, nome_variavel, url_base):
         # ................ INFORMAÇÕES ................
 
         # Tabela de frequencia
-        tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel).to_html(
-            render_links=True,
-            escape=False,)
+        tabela_quantidade = None
+        try:
+            tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel).to_html(
+                render_links=True,
+                escape=False,)
+        except Exception as e:
+            mensagem_erro.append('Tabela de frequência: '+str(e))
 
         # Tabela do describe
-        tabela_describe = service.info_coluna_describe(data_frame, nome_variavel).to_html(
-            render_links=True,
-            escape=False,)
+        tabela_describe = None
+        try:
+            tabela_describe = service.info_coluna_describe(data_frame, nome_variavel).to_html(
+                render_links=True,
+                escape=False,)
+        except Exception as e:
+            mensagem_erro.append('Estatística descritiva: '+str(e))
 
         # Informações descritivas
-        # descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(render_links=True,escape=False,)
+        # descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(
+        #    render_links=True,
+        #    escape=False,)
+
 
         # Teste de normalidade
-        is_normal = service.test_normalidade(data_frame, nome_variavel)
-        verdade_ou_falso = 'Verdadeiro' if is_normal else 'Falso'
-        test_normalidade = test_normalidade.format(nome_variavel, verdade_ou_falso)
+        is_normal = None
+        try:
+            is_normal = service.test_normalidade(data_frame, nome_variavel)
+            verdade_ou_falso = 'Verdadeiro' if is_normal else 'Falso'
+            test_normalidade = test_normalidade.format(nome_variavel, verdade_ou_falso)
+        except Exception as e:
+            mensagem_erro.append('Teste de normalidade: '+str(e))
 
         # Intervalo Z de confiança
-        intervalo = service.info_inter_conf(data_frame, nome_variavel).to_html(
-            render_links=True,
-            escape=False,)
+        intervalo = None
+        try:
+            intervalo = service.info_inter_conf(data_frame, nome_variavel).to_html(
+                render_links=True,
+                escape=False,)
+        except Exception as e:
+            mensagem_erro.append('Intervalo de confiança (Z): '+str(e))
 
         # ................ GRÁFICOS ................
 
