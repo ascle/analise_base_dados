@@ -11,14 +11,19 @@
 
             <p><b>{{view.test_normal}}</b></p>
 
+            <p><b>Tabela de frequência:</b></p>
+            {% autoescape off %}
+                {{view.tabela_quantidade}}
+            {% endautoescape %}
+
             <p><b>Estatística descritiva:</b></p>
             {% autoescape off %}
                 {{view.tabela_describe}}
             {% endautoescape %}
 
-            <p><b>Tabela de frequência:</b></p>
+            <p><b>Intervalo de confiança (Z):</b></p>
             {% autoescape off %}
-                {{view.tabela_quantidade}}
+                {{view.inter_conf}}
             {% endautoescape %}
 
             <p><b>Diagrama de frequência:</b></p>

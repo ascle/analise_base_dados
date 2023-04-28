@@ -11,6 +11,7 @@ from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.contrib.staticfiles.utils import get_files
 from pandas.api.types import is_numeric_dtype
 from scipy.stats import normaltest
+from statsmodels.stats.weightstats import zconfint
 
 from setup.settings import STATIC_ROOT
 
@@ -76,6 +77,14 @@ def info_coluna_describe(data_frame, nome_variavel):
     try:
         describe = pd.DataFrame(data_frame[nome_variavel].describe())
         return describe
+    except Exception as e:
+        raise e
+
+def info_inter_conf(data_frame, nome_variavel):
+    try:
+        serie = data_frame[nome_variavel].dropna()
+        intervalo = pd.DataFrame([zconfint(serie)], columns=['Min', 'Max'])
+        return intervalo
     except Exception as e:
         raise e
 

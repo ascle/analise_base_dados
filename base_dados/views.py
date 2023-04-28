@@ -74,6 +74,11 @@ def ver_coluna(request, nome_variavel, url_base):
         verdade_ou_falso = 'Verdadeiro' if is_normal else 'Falso'
         test_normalidade = test_normalidade.format(nome_variavel, verdade_ou_falso)
 
+        # Intervalo Z de confiança
+        intervalo = service.info_inter_conf(data_frame, nome_variavel).to_html(
+            render_links=True,
+            escape=False,)
+
         # ................ GRÁFICOS ................
 
         # Gráfico de frequencia
@@ -113,6 +118,7 @@ def ver_coluna(request, nome_variavel, url_base):
                    'url_base': url_base,
                    'tabela_quantidade': tabela_quantidade,
                    'tabela_describe': tabela_describe,
+                   'inter_conf':intervalo,
                    #'descritiva': descritiva
                    'img_freq': img_freq,
                    'img_boxplot': img_boxplot,
