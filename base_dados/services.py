@@ -57,6 +57,12 @@ def info_colunas_base(dados):
             lambda row: sorted(dados[row.ddd].unique()) if is_numeric_dtype(dados[row.ddd].dtype) else dados[
                 row.ddd].unique(), axis=1)
 
+        # Tipo de Variável
+        tipos_de_dados['Tipo de variável'] = tipos_de_dados.apply(
+            lambda row: 'Categórico' if row['Tipos de dados'] == 'object' else 'Numérico',
+            axis=1
+        )
+
         tipos_de_dados.drop(columns=['ddd'], inplace=True)
 
         return tipos_de_dados
