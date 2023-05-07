@@ -1,17 +1,14 @@
-import base64
-import io
-import urllib
-from io import BytesIO
 import matplotlib
+
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
 from django.shortcuts import render
-import base_dados.services as service
 from django.http import HttpResponseServerError
-from base_dados.services import info_colunas_base
+import base_dados.services as service
 import traceback
 import sys
+import time
+import numpy as np
 
 
 def listar_bases(request):
@@ -52,27 +49,40 @@ def ver_coluna(request, nome_variavel, url_base):
         mensagem_erro = []
         test_normalidade = "A variável '{}' é proveniente de uma distribuição normal? {}"
         data_frame = service.get_base_dados(url_base)
-
+        t_ini = 0
+        t_fim = 0
+        t_total = 0
 
         # ................ INFORMAÇÕES ................
 
         # Tabela de frequencia
         tabela_quantidade = None
+        time_exec_tabela_quantidade = None
         try:
-            tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel).to_html(
-                render_links=True,
-                escape=False,)
+            t_ini = time.time()
+            tabela_quantidade = service.info_coluna_quantidade(data_frame, nome_variavel) \
+                .to_html(render_links=True, escape=False, )
+            t_fim = time.time()
+            time_exec_tabela_quantidade = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+ time_exec_tabela_quantidade
         except Exception as e:
-            mensagem_erro.append('Tabela de frequência: '+str(e))
+            mensagem_erro.append('Tabela de frequência: ' + str(e))
+
 
         # Tabela do describe
         tabela_describe = None
+        time_exec_tabela_describe = None
         try:
+            t_ini = time.time()
             tabela_describe = service.info_coluna_describe(data_frame, nome_variavel).to_html(
                 render_links=True,
-                escape=False,)
+                escape=False, )
+            t_fim = time.time()
+            time_exec_tabela_describe = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_tabela_describe
         except Exception as e:
-            mensagem_erro.append('Estatística descritiva: '+str(e))
+            mensagem_erro.append('Estatística descritiva: ' + str(e))
+
 
         # Informações descritivas
         # descritiva = service.info_coluna_descritiva(data_frame, nome_variavel, 'OBT_NEONATAL').to_html(
@@ -82,52 +92,92 @@ def ver_coluna(request, nome_variavel, url_base):
 
         # Teste de normalidade
         is_normal = None
+        time_exec_is_normal = None
         try:
+            t_ini = time.time()
             is_normal = service.test_normalidade(data_frame, nome_variavel)
             verdade_ou_falso = 'Verdadeiro' if is_normal else 'Falso'
             test_normalidade = test_normalidade.format(nome_variavel, verdade_ou_falso)
+            t_fim = time.time()
+            time_exec_is_normal = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_is_normal
         except Exception as e:
-            mensagem_erro.append('Teste de normalidade: '+str(e))
+            mensagem_erro.append('Teste de normalidade: ' + str(e))
+
 
         # Intervalo Z de confiança
         intervalo = None
+        time_exec_intervalo = None
         try:
+            t_ini = time.time()
             intervalo = service.info_inter_conf(data_frame, nome_variavel).to_html(
                 render_links=True,
                 escape=False,)
+            t_fim = time.time()
+            time_exec_intervalo = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_intervalo
         except Exception as e:
-            mensagem_erro.append('Intervalo de confiança (Z): '+str(e))
+            mensagem_erro.append('Intervalo de confiança (Z): ' + str(e))
 
         # ................ GRÁFICOS ................
 
         # Gráfico de frequencia
+        time_exec_img_freq = None
+        t_ini = time.time()
         img_freq = service.graf_diag_freq(data_frame, nome_variavel)
+        t_fim = time.time()
+        time_exec_img_freq = np.float64(t_fim - t_ini).round(4)
+        t_total = t_total+time_exec_img_freq
+
 
         # Gráfico do BoxPlot
         img_boxplot = None
+        time_exec_img_boxplot = None
         try:
+            t_ini = time.time()
             img_boxplot = service.graf_boxplot(data_frame, nome_variavel)
+            t_fim = time.time()
+            time_exec_img_boxplot = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_img_boxplot
         except Exception as e:
-            mensagem_erro.append('Boxplot: '+str(e))
+            mensagem_erro.append('Boxplot: ' + str(e))
+
 
         # Gráfico do histograma
         img_hist = None
+        time_exec_img_hist = None
         try:
+            t_ini = time.time()
             img_hist = service.graf_histograma(data_frame, nome_variavel)
+            t_fim = time.time()
+            time_exec_img_hist = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_img_hist
         except Exception as e:
-            mensagem_erro.append('Histograma: '+str(e))
+            mensagem_erro.append('Histograma: ' + str(e))
+
 
         # Gráfico de Frequencia Acumulada
         img_freq_acu = None
+        time_exec_img_freq_acu = None
         try:
+            t_ini = time.time()
             img_freq_acu = service.graf_freq_acumulada(data_frame, nome_variavel)
+            t_fim = time.time()
+            time_exec_img_freq_acu = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_img_freq_acu
         except Exception as e:
-            mensagem_erro.append('Frequência Acumulada: '+str(e))
+            mensagem_erro.append('Frequência Acumulada: ' + str(e))
+
 
         # Gráfico das médias
         img_medias = None
+        time_exec_img_medias = None
         try:
+            t_ini = time.time()
             img_medias = service.graf_media(data_frame, nome_variavel)
+            t_fim = time.time()
+            time_exec_img_medias = np.float64(t_fim - t_ini).round(4)
+            t_total = t_total+time_exec_img_medias
         except Exception as e:
             mensagem_erro.append('Distribuição das Médias: ' + str(e))
 
@@ -135,21 +185,41 @@ def ver_coluna(request, nome_variavel, url_base):
 
         choices = {'nome_variavel': nome_variavel,
                    'url_base': url_base,
+
                    'tabela_quantidade': tabela_quantidade,
+                   'time_exec_tabela_quantidade': time_exec_tabela_quantidade,
+
                    'tabela_describe': tabela_describe,
-                   'inter_conf':intervalo,
-                   #'descritiva': descritiva
+                   'time_exec_tabela_describe': time_exec_tabela_describe,
+
+                   'inter_conf': intervalo,
+                   'time_exec_intervalo': time_exec_intervalo,
+
+                   # 'descritiva': descritiva
+
                    'img_freq': img_freq,
+                   'time_exec_img_freq': time_exec_img_freq,
+
                    'img_boxplot': img_boxplot,
+                   'time_exec_img_boxplot': time_exec_img_boxplot,
+
                    'img_hist': img_hist,
+                   'time_exec_img_hist': time_exec_img_hist,
+
                    'mensagem_erro': mensagem_erro,
+
                    'img_freq_acu': img_freq_acu,
+                   'time_exec_img_freq_acu': time_exec_img_freq_acu,
+
                    'img_medias': img_medias,
+                   'time_exec_img_medias': time_exec_img_medias,
+
                    'test_normal': test_normalidade,
+                   'time_exec_is_normal': time_exec_is_normal,
+
+                   't_total': t_total
                    }
         return render(request, 'base_dados/verColunaDaBaseDeDados.html', {"view": choices})
     except:
         traceback.print_exception(*sys.exc_info())
         return HttpResponseServerError()
-
-
