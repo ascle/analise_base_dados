@@ -225,3 +225,15 @@ def test_normalidade(data_frame, nome_variavel):
         return not (p_valor <= significancia)
     except Exception as e:
         raise e
+
+def info_correlacao(data_frame, nome_variavel):
+    try:
+        target = pd.to_numeric(data_frame[nome_variavel], errors='coerce')
+        serie_corr = data_frame._get_numeric_data().corrwith(target).round(2)
+        print('Series')
+        print(serie_corr)
+        df_corr = pd.DataFrame(serie_corr, columns=[nome_variavel])
+
+        return df_corr
+    except Exception as e:
+        raise e

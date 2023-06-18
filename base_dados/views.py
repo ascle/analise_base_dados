@@ -247,3 +247,26 @@ def ver_coluna(request, nome_variavel, url_base):
     except:
         traceback.print_exception(*sys.exc_info())
         return HttpResponseServerError()
+
+def ver_correlacao(request, nome_variavel, url_base):
+    try:
+        # ................ VARIÁVEIS ................
+        mensagem_erro = []
+        data_frame = service.get_base_dados(url_base)
+
+        # ................ FUNÇÕES ................
+        info_correlacao = None
+        try:
+            info_correlacao = service.info_correlacao(data_frame, nome_variavel) \
+                .to_html(render_links=True, escape=False, )
+        except Exception as e:
+            mensagem_erro.append('Tabela de correlação: ' + str(e))
+
+        # ................ RETORNAR DADOS ................
+        choices = {'nome_variavel': nome_variavel,
+                   'mensagem_erro':mensagem_erro,
+                   'tab_corr': info_correlacao}
+        return render(request, 'base_dados/verCorrelacao.html', {"view": choices})
+    except:
+        traceback.print_exception(*sys.exc_info())
+    return HttpResponseServerError()
