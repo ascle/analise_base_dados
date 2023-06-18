@@ -59,9 +59,11 @@ def info_colunas_base(dados):
 
         # Tipo de Variável
         tipos_de_dados['Tipo de variável'] = tipos_de_dados.apply(
-            lambda row: 'Categórico' if row['Tipos de dados'] == 'object' else 'Numérico',
+            lambda row: None if row['Tipos de dados'] == 'object' else 'Numérico',
             axis=1
         )
+
+
 
         tipos_de_dados.drop(columns=['ddd'], inplace=True)
 
@@ -125,9 +127,17 @@ def graf_diag_freq(data_frame, nome_variavel):
     try:
         iniciar_grafico()
 
-        # data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
-        ax = sns.histplot(data_frame[nome_variavel], discrete=True)
-        ax.set(title='Distribuição de frequência', xlabel=nome_variavel, ylabel='Frequência')
+        # Dados categoricos
+        if data_frame[nome_variavel].dtype == 'object':
+            porc = (data_frame[nome_variavel].value_counts()).round(2)
+            dados = pd.DataFrame({'Frequência': porc}).sort_values('Frequência')
+            ax = sns.barplot(dados.transpose())
+            plt.xticks(rotation=45, ha='right');
+            ax.set(title='Distribuição por frequência', xlabel=nome_variavel, ylabel='Frequência')
+        else:
+            # data_frame[nome_variavel].value_counts(dropna=False).plot.bar(ax=ax)
+            ax = sns.histplot(data_frame[nome_variavel], discrete=True)
+            ax.set(title='Distribuição por frequência', xlabel=nome_variavel, ylabel='Frequência')
 
         return finalizar_grafico(ax.get_figure())
     except ValueError as e:
@@ -140,9 +150,17 @@ def graf_histograma(data_frame, nome_variavel):
     try:
         iniciar_grafico()
 
-        ax = sns.distplot(data_frame[nome_variavel], hist=False, kde_kws={'bw':0.5})
-        ax = sns.histplot(data_frame[nome_variavel], stat='density', discrete=True)
-        ax.set(title='Histograma', xlabel=nome_variavel, ylabel='Densidade')
+        # Dados categoricos
+        if data_frame[nome_variavel].dtype == 'object':
+            porc = (data_frame[nome_variavel].value_counts(normalize=True)).round(2)
+            dados = pd.DataFrame({'Densidade': porc}).sort_values('Densidade')
+            ax = sns.barplot(dados.transpose())
+            plt.xticks(rotation=45, ha='right');
+            ax.set(title='Distribuição por densidade', xlabel=nome_variavel, ylabel='Densidade')
+        else:
+            ax = sns.distplot(data_frame[nome_variavel], hist=False, kde_kws={'bw': 0.5})
+            ax = sns.histplot(data_frame[nome_variavel], stat='density', discrete=True)
+            ax.set(title='Histograma', xlabel=nome_variavel, ylabel='Densidade')
 
         return finalizar_grafico(ax.get_figure())
     except ValueError as e:
