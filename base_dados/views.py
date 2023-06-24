@@ -255,6 +255,8 @@ def ver_correlacao(request, nome_variavel, url_base):
         data_frame = service.get_base_dados(url_base)
 
         # ................ FUNÇÕES ................
+
+        # Tabela de correlação
         info_correlacao = None
         try:
             info_correlacao = service.info_correlacao(data_frame, nome_variavel) \
@@ -262,10 +264,25 @@ def ver_correlacao(request, nome_variavel, url_base):
         except Exception as e:
             mensagem_erro.append('Tabela de correlação: ' + str(e))
 
+
+        # Gráfico Boxplot da variável dependente
+        img_medias = None
+        time_exec_img_medias = None
+        t_ini = time.time()
+        try:
+            img_boxplot_denpendente = service.graf_boxplot_var_denpendente(data_frame, nome_variavel)
+        except Exception as e:
+            mensagem_erro.append('Boxplot da variável dependente: ' + str(e))
+
+
+
         # ................ RETORNAR DADOS ................
         choices = {'nome_variavel': nome_variavel,
                    'mensagem_erro':mensagem_erro,
-                   'tab_corr': info_correlacao}
+                   'tab_corr': info_correlacao,
+
+                   'img_boxplot_denpendente': img_boxplot_denpendente,
+                   }
         return render(request, 'base_dados/verCorrelacao.html', {"view": choices})
     except:
         traceback.print_exception(*sys.exc_info())

@@ -215,6 +215,20 @@ def graf_media(data_frame, nome_variavel):
     except Exception as e:
         raise e
 
+def graf_boxplot_var_denpendente(data_frame, nome_variavel):
+    try:
+        iniciar_grafico()
+
+        ax = sns.boxplot(y='OBT_NEONATAL', x=nome_variavel, data=data_frame, orient='h', width=0.5)
+        ax.figure.set_size_inches(12, 6)
+        ax.set_title('Situação neonatal', fontsize=20)
+        ax.set_ylabel('Óbito', fontsize=16)
+        ax.set_xlabel(nome_variavel, fontsize=16)
+
+        return finalizar_grafico(ax.get_figure())
+    except Exception as e:
+        raise e
+
 
 # A função normaltest testa a hipótese nula H0 de que a amostra é proveniente de uma distribuição normal.
 # Rejeitar H0 se o valor p≤0,05
@@ -230,10 +244,8 @@ def info_correlacao(data_frame, nome_variavel):
     try:
         target = pd.to_numeric(data_frame[nome_variavel], errors='coerce')
         serie_corr = data_frame._get_numeric_data().corrwith(target).round(2)
-        print('Series')
-        print(serie_corr)
         df_corr = pd.DataFrame(serie_corr, columns=[nome_variavel])
-
+        df_corr.sort_values(by=[nome_variavel], inplace=True)
         return df_corr
     except Exception as e:
         raise e
