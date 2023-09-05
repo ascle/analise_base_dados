@@ -192,15 +192,15 @@ def ver_coluna(request, nome_variavel, url_base):
 
         # Gráfico das médias
         img_medias = None
-        time_exec_img_medias = None
+        ime_exec_img_medias = None
         t_ini = time.time()
-        try:
-            if data_is_numeric:
-                img_medias = service.graf_media(data_frame, nome_variavel)
-            else:
-                raise ValueError('Funcionalidade implementada somente para tipos numéricos')
-        except Exception as e:
-            mensagem_erro.append('Distribuição das Médias: ' + str(e))
+#        try:
+#            if data_is_numeric:
+#                #img_medias = service.graf_media(data_frame, nome_variavel)
+#            #else:
+#            #   raise ValueError('Funcionalidade implementada somente para tipos numéricos')
+#        except Exception as e:
+#            mensagem_erro.append('Distribuição das Médias: ' + str(e))
         t_fim = time.time()
         time_exec_img_medias = np.float64(t_fim - t_ini).round(4)
         t_total = t_total + time_exec_img_medias
