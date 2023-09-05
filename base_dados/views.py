@@ -242,13 +242,14 @@ def ver_correlacao(request, nome_variavel, url_base):
 
         # ................ FUNÇÕES ................
 
+        # Método inadequado, tem filtrar as colunas categoricas
         # Tabela de correlação
-        info_correlacao = None
-        try:
-            info_correlacao = service.info_correlacao(data_frame, nome_variavel) \
-                .to_html(render_links=True, escape=False, )
-        except Exception as e:
-            mensagem_erro.append('Tabela de correlação: ' + str(e))
+        #info_correlacao = None
+        #try:
+        #    info_correlacao = service.info_correlacao(data_frame, nome_variavel) \
+        #        .to_html(render_links=True, escape=False, )
+        #except Exception as e:
+        #   mensagem_erro.append('Tabela de correlação: ' + str(e))
 
 
         # Gráfico Boxplot da variável dependente
@@ -265,7 +266,7 @@ def ver_correlacao(request, nome_variavel, url_base):
         # ................ RETORNAR DADOS ................
         choices = {'nome_variavel': nome_variavel,
                    'mensagem_erro':mensagem_erro,
-                   'tab_corr': info_correlacao,
+                   #'tab_corr': info_correlacao,
 
                    'img_boxplot_denpendente': img_boxplot_denpendente,
                    }

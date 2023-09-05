@@ -240,12 +240,13 @@ def test_normalidade(data_frame, nome_variavel):
     except Exception as e:
         raise e
 
-def info_correlacao(data_frame, nome_variavel):
-    try:
-        target = pd.to_numeric(data_frame[nome_variavel], errors='coerce')
-        serie_corr = data_frame._get_numeric_data().corrwith(target).round(2)
-        df_corr = pd.DataFrame(serie_corr, columns=[nome_variavel])
-        df_corr.sort_values(by=[nome_variavel], inplace=True)
-        return df_corr
-    except Exception as e:
-        raise e
+# Método inadequado, tem filtrar as colunas categoricas
+#def info_correlacao(data_frame, nome_variavel):
+#    try:
+#        target = pd.to_numeric(data_frame[nome_variavel], errors='coerce')
+#        serie_corr = data_frame._get_numeric_data().corrwith(target).round(2)
+#        df_corr = pd.DataFrame(serie_corr, columns=[nome_variavel])
+#        df_corr.sort_values(by=[nome_variavel], inplace=True)
+#        return df_corr
+#    except Exception as e:
+#        raise e
