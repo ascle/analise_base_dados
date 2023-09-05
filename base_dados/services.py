@@ -174,7 +174,7 @@ def graf_boxplot(data_frame, nome_variavel):
         iniciar_grafico()
 
         ax = sns.boxplot(data=data_frame[nome_variavel], orient='h', medianprops={"color": "coral"})
-        ax.set(title='Distribuição de frequência', xlabel=nome_variavel)
+        ax.set(title='Boxplot', xlabel=nome_variavel)
 
         return finalizar_grafico(ax.get_figure())
     except ValueError as e:

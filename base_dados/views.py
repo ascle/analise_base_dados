@@ -35,10 +35,7 @@ def ver_base_dados(request, base_dados):
         )
 
         dicionario['Ação'] = dicionario.apply(
-            lambda row: "<a href='/verColunaDaBaseDeDados/{}/{}'>Descritiva</a>"
-                        " <a href='/verCorrelacao/{}/{}'>Correlação</a>".format(
-                row.ddd,
-                base_dados.replace('\\', '%5C'),
+            lambda row: "<a href='/verColunaDaBaseDeDados/{}/{}'>Explorar</a>".format(
                 row.ddd,
                 base_dados.replace('\\', '%5C')),
             axis=1
@@ -215,6 +212,22 @@ def ver_coluna(request, nome_variavel, url_base):
         time_exec_img_medias = np.float64(t_fim - t_ini).round(4)
         t_total = t_total + time_exec_img_medias
 
+
+        # Gráfico Boxplot da variável dependente
+        img_boxplot_denpendente = None
+        time_exec_boxplot = None
+        t_ini = time.time()
+        try:
+            img_boxplot_denpendente = service.graf_boxplot_var_denpendente(data_frame, nome_variavel)
+            choices['img_boxplot_denpendente'] = img_boxplot_denpendente
+        except Exception as e:
+            mensagem_erro.append('Boxplot da variável dependente: ' + str(e))
+        t_fim = time.time()
+        time_exec_boxplot = np.float64(t_fim - t_ini).round(4)
+        t_total = t_total + time_exec_boxplot
+
+
+
         # ................ PARÂMETROS ................
 
         choices['time_exec_tabela_quantidade'] = time_exec_tabela_quantidade
@@ -226,6 +239,7 @@ def ver_coluna(request, nome_variavel, url_base):
         choices['time_exec_img_freq_acu'] = time_exec_img_freq_acu
         choices['time_exec_img_medias'] = time_exec_img_medias
         choices['time_exec_is_normal'] = time_exec_is_normal
+        choices['time_exec_boxplot'] = time_exec_boxplot
         choices['t_total'] = t_total
         choices['mensagem_erro'] = mensagem_erro
 
@@ -233,44 +247,3 @@ def ver_coluna(request, nome_variavel, url_base):
     except:
         traceback.print_exception(*sys.exc_info())
         return HttpResponseServerError()
-
-def ver_correlacao(request, nome_variavel, url_base):
-    try:
-        # ................ VARIÁVEIS ................
-        mensagem_erro = []
-        data_frame = service.get_base_dados(url_base)
-
-        # ................ FUNÇÕES ................
-
-        # Método inadequado, tem filtrar as colunas categoricas
-        # Tabela de correlação
-        #info_correlacao = None
-        #try:
-        #    info_correlacao = service.info_correlacao(data_frame, nome_variavel) \
-        #        .to_html(render_links=True, escape=False, )
-        #except Exception as e:
-        #   mensagem_erro.append('Tabela de correlação: ' + str(e))
-
-
-        # Gráfico Boxplot da variável dependente
-        img_medias = None
-        time_exec_img_medias = None
-        t_ini = time.time()
-        try:
-            img_boxplot_denpendente = service.graf_boxplot_var_denpendente(data_frame, nome_variavel)
-        except Exception as e:
-            mensagem_erro.append('Boxplot da variável dependente: ' + str(e))
-
-
-
-        # ................ RETORNAR DADOS ................
-        choices = {'nome_variavel': nome_variavel,
-                   'mensagem_erro':mensagem_erro,
-                   #'tab_corr': info_correlacao,
-
-                   'img_boxplot_denpendente': img_boxplot_denpendente,
-                   }
-        return render(request, 'base_dados/verCorrelacao.html', {"view": choices})
-    except:
-        traceback.print_exception(*sys.exc_info())
-    return HttpResponseServerError()
