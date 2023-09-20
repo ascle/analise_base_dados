@@ -1,0 +1,71 @@
+{% extends 'base_dados/base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="cards__titulo">Informações da variável</h2>
+<section class="conteudo">
+    <section class="imagem">
+        <div class="imagem__conteudo">
+
+            <p><b>Base de dados:</b> <a href="{% url 'verBaseDados' view.url_base %}">{{view.url_base}}</a></p>
+            <p><b>Variável:</b> {{view.nome_variavel}}</p>
+
+            <p><b>{{view.test_normal}}</b></p>
+            Tempo de execução: {{view.time_exec_is_normal}}
+            <br><br>
+
+            <p><b>Tabela de frequência:</b></p>
+            {% autoescape off %}
+                {{view.tabela_quantidade}}
+            {% endautoescape %}
+            <br>Tempo de execução: {{view.time_exec_img_freq}}
+            <br><br>
+
+            <p><b>Estatística descritiva:</b></p>
+            {% autoescape off %}
+                {{view.tabela_describe}}
+            {% endautoescape %}
+            <br>Tempo de execução: {{view.time_exec_tabela_describe}}
+            <br><br>
+
+            <p><b>Intervalo de confiança (Z):</b></p>
+            {% autoescape off %}
+                {{view.inter_conf}}
+            {% endautoescape %}
+            <br>Tempo de execução: {{view.time_exec_intervalo}}
+            <br><br>
+
+            <p><b>Diagrama de frequência:</b></p>
+            <img src="data:image/png;base64,{{ view.img_freq }}" alt="">
+            <br>Tempo de execução: {{view.time_exec_img_freq}}
+            <br><br>
+
+            <p><b>Histograma:</b></p>
+            <img src="data:image/png;base64,{{ view.img_hist }}" alt="">
+            <br>Tempo de execução: {{view.time_exec_img_hist}}
+            <br><br>
+
+            <p><b>Frequência Acumulada:</b></p>
+            <img src="data:image/png;base64,{{ view.img_freq_acu }}" alt="">
+            <br>Tempo de execução: {{view.time_exec_img_freq_acu}}
+            <br><br>
+
+            <p><b>BoxPlot:</b></p>
+            <img src="data:image/png;base64,{{ view.img_boxplot }}" alt="">
+            <br>Tempo de execução: {{view.time_exec_img_boxplot}}
+            <br><br>
+
+            <!--
+            <p><b>Médias:</b></p>
+            <img src="data:image/png;base64,{{ view.img_medias }}" alt="">
+            <br>Tempo de execução: {{view.time_exec_img_medias}}
+            <br><br>
+            -->
+
+            <p><b>Tempo total de execução: {{view.t_total}}</b></p>
+        </div>
+    </section>
+</section>
+
+</main>
+</div>
+{% endblock %}

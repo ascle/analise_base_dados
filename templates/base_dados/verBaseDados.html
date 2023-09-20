@@ -1,0 +1,20 @@
+{% extends 'base_dados/base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="cards__titulo">Informações da base de dados</h2>
+<section class="conteudo">
+    <section class="imagem">
+        <div class="imagem__conteudo">
+            <p><b>Base de dados:</b> {{base_dados.url}}</p>
+            <p><b>Informações:</b> {{base_dados.info}}</p>
+            <p><b>Dicionário de Dados:</b></p>
+            {% autoescape off %}
+                {{base_dados.info_colunas}}
+            {% endautoescape %}
+        </div>
+    </section>
+</section>
+
+</main>
+</div>
+{% endblock %}
